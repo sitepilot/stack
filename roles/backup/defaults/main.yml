@@ -1,0 +1,6 @@
+---
+backup_repo: ""
+backup_tag: "app"
+backup_password: ""
+backup_s3_key: ""
+backup_s3_secret: ""

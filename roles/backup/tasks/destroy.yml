@@ -1,0 +1,19 @@
+---
+- ansible.builtin.assert:
+    that:
+      - backup_id | length > 0
+      - backup_repo | length > 0
+      - backup_password | length > 0
+
+- name: Delete backup from repository.
+  ansible.builtin.command: "restic -r {{ backup_repo }} forget {{ backup_id }}"
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ backup_s3_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ backup_s3_secret }}"
+    RESTIC_PASSWORD: "{{ backup_password }}"
+  changed_when: false
+  register: result
+
+- name: Print result.
+  ansible.builtin.debug:
+    msg: "{{ result.stdout_lines | last }}"

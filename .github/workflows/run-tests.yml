@@ -37,3 +37,9 @@ jobs:
 
       - name: Test provision playbook
         run: ./container provision
+
+      - name: Test backup playbook
+        run: |
+          ./container backup -t create
+          ./container backup -t restore
+          ./container backup -t destroy

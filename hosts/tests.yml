@@ -12,6 +12,9 @@ tests:
       mysql_user: "test-user"
       mysql_password: "secret"
       mysql_database: "app"
+      backup_id: "latest"
+      backup_repo: "/tmp/backup"
+      backup_password: "secret"
       stack:
         [
           "app",

@@ -1,0 +1,30 @@
+---
+- ansible.builtin.assert:
+    that:
+      - backup_id | length > 0
+      - backup_repo | length > 0
+      - backup_password | length > 0
+
+- name: Restore backup files.
+  ansible.builtin.command: "restic -r {{ backup_repo }} restore {{ backup_id }} --target ."
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ backup_s3_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ backup_s3_secret }}"
+    RESTIC_PASSWORD: "{{ backup_password }}"
+  args:
+    chdir: /app
+  register: result
+  changed_when: false
+
+- name: Restore database.
+  community.mysql.mysql_db:
+    state: import
+    name: app
+    force: true
+    target: /app/private/backup.sql
+    login_unix_socket: /run/mysqld/mysqld.sock
+  when: "'mysql' in stack"
+
+- name: Print result.
+  ansible.builtin.debug:
+    msg: "{{ result.stdout_lines | last }}"
