@@ -28,9 +28,9 @@ jobs:
         run: ansible-lint ./roles
 
       - name: Setup LXD
-        uses: whywaita/setup-lxd@v1
+        uses: canonical/setup-lxd@v0.1.1
         with:
-          lxd_version: latest/stable
+          channel: latest/stable
 
       - name: Initialize test container
         run: ./container init
