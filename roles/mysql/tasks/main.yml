@@ -2,7 +2,6 @@
 - ansible.builtin.assert:
     that:
       - mysql_user | length > 0
-      - mysql_database | length > 0
       - mysql_password | length > 0
 
 - name: Ensure mysql is installed.
@@ -34,9 +33,9 @@
     state: absent
     login_unix_socket: "{{ mysql_unix_socket }}"
 
-- name: "Create mysql database '{{ mysql_database }}'."
+- name: "Create mysql database."
   community.mysql.mysql_db:
-    name: "{{ mysql_database }}"
+    name: app
     state: present
     login_unix_socket: "{{ mysql_unix_socket }}"
 
@@ -44,7 +43,7 @@
   community.mysql.mysql_user:
     name: "{{ mysql_user }}"
     password: "{{ mysql_password }}"
-    priv: "{{ mysql_database }}.*:ALL"
+    priv: "app.*:ALL"
     state: present
     host: "%"
     login_unix_socket: "{{ mysql_unix_socket }}"
