@@ -1,25 +1,25 @@
 ---
 - name: Add litespeed repository key.
-  apt_key:
+  ansible.builtin.apt_key:
     id: "0x011AA62DEDA1F085"
     keyserver: keyserver.ubuntu.com
     keyring: /etc/apt/trusted.gpg.d/litespeed.gpg
 
 - name: Add litespeed repository.
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb https://rpms.litespeedtech.com/debian/ {{ ansible_distribution_release }} main"
     filename: litespeed
-    update_cache: yes
+    update_cache: true
 
 - name: Ensure litespeed is installed.
-  apt:
+  ansible.builtin.apt:
     name: openlitespeed
     state: present
     cache_valid_time: 3600
   notify: reload litespeed
 
 - name: Generate litespeed configuration.
-  template:
+  ansible.builtin.template:
     src: "{{ item.template }}"
     dest: "{{ item.destination }}"
     mode: "0644"

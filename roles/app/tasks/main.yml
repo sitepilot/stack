@@ -1,20 +1,21 @@
 ---
 - name: Create public directory.
-  file:
+  ansible.builtin.file:
     path: /app/public
     state: directory
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
+    mode: "0755"
 
 - name: Ensure php-fpm is installed.
-  apt:
+  ansible.builtin.apt:
     name: php{{ php_version }}-fpm
     state: present
     cache_valid_time: 3600
   notify: restart php-fpm
 
 - name: Generate php configuration.
-  template:
+  ansible.builtin.template:
     src: "{{ item.template }}"
     dest: "{{ item.destination }}"
     mode: "0644"

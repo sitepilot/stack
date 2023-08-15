@@ -1,39 +1,40 @@
 ---
 - name: Remove litespeed when proxy is disabled.
-  apt:
+  ansible.builtin.apt:
     name: openlitespeed
     state: absent
     purge: true
   when: not litespeed_proxy_enabled
 
 - name: Add nginx repository key.
-  apt_key:
+  ansible.builtin.apt_key:
     id: "0x4F4EA0AAE5267A6C"
     keyserver: keyserver.ubuntu.com
     keyring: /etc/apt/trusted.gpg.d/nginx.gpg
 
 - name: Add nginx repository.
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb http://ppa.launchpad.net/ondrej/nginx/ubuntu {{ ansible_distribution_release }} main"
     filename: nginx
-    update_cache: yes
+    update_cache: true
 
 - name: Ensure nginx is installed.
-  apt:
+  ansible.builtin.apt:
     name: nginx
     state: present
     cache_valid_time: 3600
   notify: reload nginx
 
 - name: Create ping directory.
-  file:
+  ansible.builtin.file:
     path: /opt/ping
     state: directory
     owner: root
     group: root
+    mode: "0755"
 
 - name: Generate nginx configuration.
-  template:
+  ansible.builtin.template:
     src: "{{ item.template }}"
     dest: "{{ item.destination }}"
     mode: "0644"

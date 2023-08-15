@@ -1,10 +1,10 @@
 ---
-- assert:
+- ansible.builtin.assert:
     that:
       - hostname | string | length > 0
 
 - name: Create ansible temp directory.
-  file:
+  ansible.builtin.file:
     path: /root/.ansible/tmp
     state: directory
     owner: root
@@ -12,7 +12,7 @@
     mode: "0700"
 
 - name: Install base packages.
-  apt:
+  ansible.builtin.apt:
     name:
       - curl
       - nano
@@ -23,11 +23,11 @@
     cache_valid_time: 3600
 
 - name: Set the hostname.
-  hostname:
+  ansible.builtin.hostname:
     name: "{{ hostname }}"
 
 - name: Add hostname to /etc/hosts.
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/hosts
     marker: "# {mark} Hostname"
     block: |
@@ -35,26 +35,26 @@
       127.0.0.1 {{ hostname }}
 
 - name: Generate sshd configuration.
-  template:
+  ansible.builtin.template:
     src: sshd_config.j2
     dest: /etc/ssh/sshd_config
     mode: "0644"
   notify: reload sshd
 
 - name: Generate logrotate configuration.
-  template:
+  ansible.builtin.template:
     src: logrotate.j2
     dest: /etc/logrotate.d/app
     mode: "0644"
 
 - name: Generate welcome message.
-  template:
+  ansible.builtin.template:
     src: welcome.j2
     dest: /etc/update-motd.d/00-welcome
     mode: "0755"
 
 - name: Cleanup motd files.
-  file:
+  ansible.builtin.file:
     path: "/etc/update-motd.d/{{ item }}"
     state: absent
   loop:
@@ -70,7 +70,7 @@
     - 98-reboot-required
 
 - name: Generate unattended upgrades configuration.
-  template:
+  ansible.builtin.template:
     src: unattended_upgrades.j2
     dest: /etc/apt/apt.conf.d/20auto-upgrades
     owner: root

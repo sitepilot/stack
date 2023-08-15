@@ -1,18 +1,18 @@
 ---
 - name: Add redis repository key.
-  apt_key:
+  ansible.builtin.apt_key:
     url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcc59e6b43fa6e3ca"
     keyring: /etc/apt/trusted.gpg.d/redislabs.gpg
     state: present
 
 - name: Add redis repository.
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb http://ppa.launchpad.net/redislabs/redis/ubuntu {{ ansible_distribution_release }} main"
     filename: redis
-    update_cache: yes
+    update_cache: true
 
 - name: Ensure redis is installed.
-  apt:
+  ansible.builtin.apt:
     name: redis-server
     state: present
     cache_valid_time: 3600

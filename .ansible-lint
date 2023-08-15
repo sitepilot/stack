@@ -4,3 +4,4 @@ skip_list:
   - meta-no-info
   - line-length
   - command-instead-of-module
+  - name[casing]

@@ -1,12 +1,12 @@
 ---
 - name: reload sshd
-  service:
+  ansible.builtin.service:
     name: sshd
     state: reloaded
     enabled: true
 
 - name: restart unattended-upgrades
-  service:
+  ansible.builtin.service:
     name: unattended-upgrades
     state: restarted
     enabled: true

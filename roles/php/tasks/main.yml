@@ -1,23 +1,23 @@
 ---
-- assert:
+- ansible.builtin.assert:
     that:
       - php_version | string | length > 0
       - "'{{ php_version }}' in php_versions"
 
 - name: Add php repository key.
-  apt_key:
+  ansible.builtin.apt_key:
     id: "0x4F4EA0AAE5267A6C"
     keyserver: keyserver.ubuntu.com
     keyring: /etc/apt/trusted.gpg.d/php.gpg
 
 - name: Add php repository.
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb http://ppa.launchpad.net/ondrej/php/ubuntu {{ ansible_distribution_release }} main"
     filename: php
-    update_cache: yes
+    update_cache: true
 
 - name: Ensure php packages are installed.
-  apt:
+  ansible.builtin.apt:
     name:
       - php{{ php_version }}-apcu
       - php{{ php_version }}-bcmath
@@ -46,12 +46,12 @@
     cache_valid_time: 3600
 
 - name: Generate cli configuration.
-  template:
+  ansible.builtin.template:
     src: php.j2
     dest: /etc/php/{{ php_version }}/cli/conf.d/90-app.ini
     mode: "0644"
 
 - name: Update php alternatives.
-  alternatives:
+  community.general.alternatives:
     name: php
     path: /usr/bin/php{{ php_version }}

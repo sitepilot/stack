@@ -1,12 +1,12 @@
 ---
-- assert:
+- ansible.builtin.assert:
     that:
       - mysql_user | length > 0
       - mysql_database | length > 0
       - mysql_password | length > 0
 
 - name: Ensure mysql is installed.
-  apt:
+  ansible.builtin.apt:
     name:
       - mysql-server
       - python3-pymysql
@@ -15,33 +15,33 @@
   notify: restart mysql
 
 - name: Get list of hosts for the anonymous user.
-  command: mysql -NBe "SELECT Host FROM mysql.user WHERE User = ''"
+  ansible.builtin.command: mysql -NBe "SELECT Host FROM mysql.user WHERE User = ''"
   register: mysql_anonymous_hosts
   changed_when: false
   check_mode: false
 
 - name: Remove anonymous mysql users.
-  mysql_user:
+  community.mysql.mysql_user:
     name: ""
     host: "{{ item }}"
     state: absent
     login_unix_socket: "{{ mysql_unix_socket }}"
-  with_items: "{{ mysql_anonymous_hosts.stdout_lines|default([]) }}"
+  with_items: "{{ mysql_anonymous_hosts.stdout_lines | default([]) }}"
 
 - name: Remove mysql test database.
-  mysql_db:
+  community.mysql.mysql_db:
     name: 'test'
     state: absent
     login_unix_socket: "{{ mysql_unix_socket }}"
 
 - name: "Create mysql database '{{ mysql_database }}'."
-  mysql_db:
+  community.mysql.mysql_db:
     name: "{{ mysql_database }}"
     state: present
     login_unix_socket: "{{ mysql_unix_socket }}"
 
 - name: "Create mysql user '{{ mysql_user }}'."
-  mysql_user:
+  community.mysql.mysql_user:
     name: "{{ mysql_user }}"
     password: "{{ mysql_password }}"
     priv: "{{ mysql_database }}.*:ALL"
