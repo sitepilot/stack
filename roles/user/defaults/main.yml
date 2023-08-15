@@ -1,0 +1,7 @@
+---
+user_name: ""
+user_password: ""
+user_authorized_keys:
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDg1jjclCDCriCLeWviNALyhg0+jtQeSYZTBoL/5Lo8H
+user_shell: /bin/bash
+user_groups: []

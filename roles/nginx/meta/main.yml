@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: user
+  - role: litespeed
+    when: litespeed_proxy_enabled

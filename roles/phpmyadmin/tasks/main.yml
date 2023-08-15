@@ -1,0 +1,62 @@
+---
+- assert:
+    that:
+      - "'mysql' in stack"
+
+- name: Check installed version.
+  stat:
+    path: "/opt/phpmyadmin/.version-{{ phpmyadmin_version }}"
+  register: version_check
+
+- name: Cleanup old installation files.
+  file:
+    state: absent
+    path: "/opt/phpmyadmin"
+  when: not version_check.stat.exists
+
+- name: Download and unzip source.
+  unarchive:
+    src: "https://files.phpmyadmin.net/phpMyAdmin/{{ phpmyadmin_version }}/phpMyAdmin-{{ phpmyadmin_version }}-all-languages.zip"
+    dest: "/opt"
+    remote_src: true
+  when: not version_check.stat.exists
+
+- name: Rename source folder.
+  command: "mv /opt/phpMyAdmin-{{ phpmyadmin_version }}-all-languages /opt/phpmyadmin"
+  when: not version_check.stat.exists
+
+- name: Create version file.
+  copy:
+    content: "{{ phpmyadmin_version }}"
+    dest: "/opt/phpmyadmin/.version-{{ phpmyadmin_version }}"
+    mode: 0644
+  when: not version_check.stat.exists
+
+- name: Check blowfish file.
+  stat:
+    path: "/opt/phpmyadmin/blowfish.inc.php"
+  register: blowfish_check
+
+- name: Generate blowfish secret.
+  template:
+    src: blowfish.j2
+    dest: "/opt/phpmyadmin/blowfish.inc.php"
+    mode: 0644
+  when: not blowfish_check.stat.exists
+
+- name: Update permissions.
+  file:
+    state: "directory"
+    path: "/opt/phpmyadmin/tmp"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: 0755
+
+- name: Generate configuartion.
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+  loop:
+    - src: config.j2
+      dest: "/opt/phpmyadmin/config.inc.php"

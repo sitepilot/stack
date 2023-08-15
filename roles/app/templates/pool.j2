@@ -1,0 +1,10 @@
+[app]
+listen = /run/php/php{{ php_version }}-fpm.sock
+listen.owner = {{ user_name }}
+listen.group = {{ user_name }}
+user = {{ user_name }}
+group = {{ user_name }}
+pm = ondemand
+pm.max_children = {{ php_max_children }}
+pm.max_requests = 2500
+chdir = /app/public

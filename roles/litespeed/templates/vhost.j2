@@ -1,0 +1,25 @@
+docRoot                   $VH_ROOT/public
+
+errorlog  {
+  useServer               1
+  logLevel                ERROR
+}
+
+accesslog  {
+  useServer               1
+}
+
+extprocessor app {
+  type                    proxy
+  address                 http://127.0.0.1:8080
+  maxConns                2000
+  initTimeout             60
+  retryTimeout            0
+  respBuffer              0
+}
+
+context / {
+  type                    proxy
+  handler                 app
+  addDefaultCharset       off
+}

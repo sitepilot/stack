@@ -1,0 +1,57 @@
+---
+- assert:
+    that:
+      - php_version | string | length > 0
+      - "'{{ php_version }}' in php_versions"
+
+- name: Add php repository key.
+  apt_key:
+    id: "0x4F4EA0AAE5267A6C"
+    keyserver: keyserver.ubuntu.com
+    keyring: /etc/apt/trusted.gpg.d/php.gpg
+
+- name: Add php repository.
+  apt_repository:
+    repo: "deb http://ppa.launchpad.net/ondrej/php/ubuntu {{ ansible_distribution_release }} main"
+    filename: php
+    update_cache: yes
+
+- name: Ensure php packages are installed.
+  apt:
+    name:
+      - php{{ php_version }}-apcu
+      - php{{ php_version }}-bcmath
+      - php{{ php_version }}-bz2
+      - php{{ php_version }}-cli
+      - php{{ php_version }}-common
+      - php{{ php_version }}-curl
+      - php{{ php_version }}-gd
+      - php{{ php_version }}-igbinary
+      - php{{ php_version }}-imagick
+      - php{{ php_version }}-imap
+      - php{{ php_version }}-intl
+      - php{{ php_version }}-mbstring
+      - php{{ php_version }}-memcached
+      - php{{ php_version }}-msgpack
+      - php{{ php_version }}-mysql
+      - php{{ php_version }}-odbc
+      - php{{ php_version }}-opcache
+      - php{{ php_version }}-readline
+      - php{{ php_version }}-redis
+      - php{{ php_version }}-soap
+      - php{{ php_version }}-sqlite3
+      - php{{ php_version }}-xml
+      - php{{ php_version }}-zip
+    state: present
+    cache_valid_time: 3600
+
+- name: Generate cli configuration.
+  template:
+    src: php.j2
+    dest: /etc/php/{{ php_version }}/cli/conf.d/90-app.ini
+    mode: "0644"
+
+- name: Update php alternatives.
+  alternatives:
+    name: php
+    path: /usr/bin/php{{ php_version }}

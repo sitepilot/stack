@@ -1,0 +1,6 @@
+---
+- name: reload litespeed
+  service:
+    name: lshttpd
+    state: reloaded
+    enabled: true

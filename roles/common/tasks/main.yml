@@ -1,0 +1,79 @@
+---
+- assert:
+    that:
+      - hostname | string | length > 0
+
+- name: Create ansible temp directory.
+  file:
+    path: /root/.ansible/tmp
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Install base packages.
+  apt:
+    name:
+      - curl
+      - nano
+      - zip
+      - unzip
+      - unattended-upgrades
+    state: present
+    cache_valid_time: 3600
+
+- name: Set the hostname.
+  hostname:
+    name: "{{ hostname }}"
+
+- name: Add hostname to /etc/hosts.
+  blockinfile:
+    path: /etc/hosts
+    marker: "# {mark} Hostname"
+    block: |
+      ::1 {{ hostname }}
+      127.0.0.1 {{ hostname }}
+
+- name: Generate sshd configuration.
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    mode: "0644"
+  notify: reload sshd
+
+- name: Generate logrotate configuration.
+  template:
+    src: logrotate.j2
+    dest: /etc/logrotate.d/app
+    mode: "0644"
+
+- name: Generate welcome message.
+  template:
+    src: welcome.j2
+    dest: /etc/update-motd.d/00-welcome
+    mode: "0755"
+
+- name: Cleanup motd files.
+  file:
+    path: "/etc/update-motd.d/{{ item }}"
+    state: absent
+  loop:
+    - 10-help-text
+    - 50-motd-news
+    - 50-landscape-sysinfo
+    - 85-fwupd
+    - 90-updates-available
+    - 91-release-upgrade
+    - 95-hwe-eol
+    - 97-overlayroot
+    - 98-fsck-at-reboot
+    - 98-reboot-required
+
+- name: Generate unattended upgrades configuration.
+  template:
+    src: unattended_upgrades.j2
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart unattended-upgrades

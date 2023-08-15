@@ -1,0 +1,47 @@
+---
+- name: Remove litespeed when proxy is disabled.
+  apt:
+    name: openlitespeed
+    state: absent
+    purge: true
+  when: not litespeed_proxy_enabled
+
+- name: Add nginx repository key.
+  apt_key:
+    id: "0x4F4EA0AAE5267A6C"
+    keyserver: keyserver.ubuntu.com
+    keyring: /etc/apt/trusted.gpg.d/nginx.gpg
+
+- name: Add nginx repository.
+  apt_repository:
+    repo: "deb http://ppa.launchpad.net/ondrej/nginx/ubuntu {{ ansible_distribution_release }} main"
+    filename: nginx
+    update_cache: yes
+
+- name: Ensure nginx is installed.
+  apt:
+    name: nginx
+    state: present
+    cache_valid_time: 3600
+  notify: reload nginx
+
+- name: Create ping directory.
+  file:
+    path: /opt/ping
+    state: directory
+    owner: root
+    group: root
+
+- name: Generate nginx configuration.
+  template:
+    src: "{{ item.template }}"
+    dest: "{{ item.destination }}"
+    mode: "0644"
+  loop:
+    - template: nginx.j2
+      destination: /etc/nginx/nginx.conf
+    - template: vhost.j2
+      destination: /etc/nginx/sites-available/default
+    - template: ping.j2
+      destination: /opt/ping/index.php
+  notify: reload nginx

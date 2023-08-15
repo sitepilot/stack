@@ -1,0 +1,7 @@
+; {{ ansible_managed }}
+memory_limit = {{ php_memory_limit }}
+mail.log = '/app/logs/mail.log'
+error_log = '/app/logs/debug.log'
+{% if 'msmtp' in stack %}
+sendmail_path=/usr/bin/msmtp -t
+{% endif %}

@@ -1,0 +1,12 @@
+---
+- name: reload sshd
+  service:
+    name: sshd
+    state: reloaded
+    enabled: true
+
+- name: restart unattended-upgrades
+  service:
+    name: unattended-upgrades
+    state: restarted
+    enabled: true

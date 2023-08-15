@@ -1,0 +1,3 @@
+---
+# PHP
+php_max_children: 5

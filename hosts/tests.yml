@@ -1,0 +1,30 @@
+---
+tests:
+  hosts:
+    test-container:
+      hostname: test-site-live
+      user_name: test-user
+      user_password: $2y$10$kit1fHeGNDnQmkM.BA62kubip04TUNLRQYl1EJPNawJhNgOrniP5G # secret
+      php_version: "8.1"
+      nginx_block_robots: false
+      nginx_cache_enabled: false
+      litespeed_proxy_enabled: true
+      mysql_user: "test-user"
+      mysql_password: "secret"
+      mysql_database: "app"
+      stack:
+        [
+          "app",
+          "composer",
+          "wpcli",
+          "mysql",
+          "msmtp",
+          "nodejs",
+          "redis",
+          "phpmyadmin",
+        ]
+      ansible_user: root
+      ansible_host: 127.0.0.1
+      ansible_port: 4022
+      ansible_ssh_private_key_file: ssh/id_ed25519
+      ansible_ssh_common_args: -o StrictHostKeyChecking=no
