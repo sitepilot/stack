@@ -48,7 +48,7 @@ function init {
 }
 
 function provision {
-  ansible-playbook provision.yml -e host=test-container "${@}" || return 1
+  ansible-playbook playbooks/provision.yml -e host=test-container "${@}" || return 1
 }
 
 function backup {
