@@ -55,6 +55,10 @@ function backup {
   ansible-playbook playbooks/backup.yml -e host=test-container "${@}" || return 1
 }
 
+function wordpress {
+  ansible-playbook playbooks/wordpress.yml -e host=test-container "${@}" || return 1
+}
+
 function shell {
   lxc exec $CONTAINER bash || return 1
 }
@@ -86,7 +90,10 @@ provision)
   provision "${@:2}" || error "Failed to provision the container."
   ;;
 backup)
-  backup "${@:2}" || error "Failed to backup the container."
+  backup "${@:2}" || error "Failed to run backup commands in the container."
+  ;;
+wordpress)
+  wordpress "${@:2}" || error "Failed to run WordPress commands in the container."
   ;;
 shell)
   shell || error "Failed to start a shell."

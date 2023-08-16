@@ -14,6 +14,11 @@ tests:
       backup_id: "latest"
       backup_repo: "/tmp/backup"
       backup_password: "secret"
+      wp_url: 'http://195.201.146.84:4080'
+      wp_title: 'Test'
+      wp_admin: 'captain'
+      wp_password: 'secret'
+      wp_email: 'website@sitepilot.io'
       stack:
         [
           "app",

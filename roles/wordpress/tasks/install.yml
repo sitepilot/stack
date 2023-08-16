@@ -1,0 +1,54 @@
+---
+- ansible.builtin.assert:
+    that:
+      - "'app' in stack"
+      - "'mysql' in stack"
+      - "'wpcli' in stack"
+      - wp_url | length > 0
+      - wp_title | length > 0
+      - wp_admin | length > 0
+      - wp_password | length > 0
+      - wp_email | length > 0
+
+- name: Check if WordPress is already downloaded.
+  ansible.builtin.stat:
+    path: /app/public/wp-includes
+  register: wp_includes
+
+- name: Download WordPress core.
+  ansible.builtin.command: "wp core download"
+  args:
+    chdir: "/app/public"
+  changed_when: true
+  when: not wp_includes.stat.exists
+
+- name: Check if WordPress is already configured.
+  ansible.builtin.stat:
+    path: /app/public/wp-config.php
+  register: wp_config
+
+- name: Configure WordPress.
+  ansible.builtin.command: "wp config create
+    --dbname='app' --dbhost='127.0.0.1'
+    --dbuser='{{ mysql_user }}' --dbpass='{{ mysql_password }}'"
+  args:
+    chdir: "/app/public"
+  changed_when: true
+  when: not wp_config.stat.exists
+
+- block:
+    - name: Check if WordPress is already installed.
+      ansible.builtin.command: "wp core is-installed"
+      args:
+        chdir: "/app/public"
+      changed_when: true
+      no_log: true
+  rescue:
+    - name: Install WordPress.
+      ansible.builtin.command: "wp core install
+        --url='{{ wp_url }}' --title='{{ wp_title }}'
+        --admin_user='{{ wp_admin }}' --admin_password='{{ wp_password }}'
+        --admin_email='{{ wp_email }}'"
+      args:
+        chdir: "/app/public"
+      changed_when: true

@@ -1,0 +1,6 @@
+---
+- hosts: "{{ host }}"
+  become: true
+  become_user: "{{ user_name }}"
+  roles:
+    - role: wordpress

@@ -43,3 +43,7 @@ jobs:
           ./container backup -t create
           ./container backup -t restore
           ./container backup -t destroy
+
+      - name: Test wordpress playbook
+        run: |
+          ./container wordpress -t install
