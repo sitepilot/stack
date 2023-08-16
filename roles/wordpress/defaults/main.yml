@@ -4,3 +4,11 @@ wp_title: ''
 wp_admin: ''
 wp_password: ''
 wp_email: ''
+
+pull_key: ""
+pull_host: ""
+pull_port: 22
+pull_user: root
+pull_path: ""
+pull_search: ""
+pull_replace: ""

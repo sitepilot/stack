@@ -1,14 +1,13 @@
 ---
 - ansible.builtin.assert:
     that:
-      - "'app' in stack"
-      - "'mysql' in stack"
-      - "'wpcli' in stack"
       - wp_url | length > 0
       - wp_title | length > 0
       - wp_admin | length > 0
       - wp_password | length > 0
       - wp_email | length > 0
+      - mysql_user | length > 0
+      - mysql_password | length > 0
 
 - name: Check if WordPress is already downloaded.
   ansible.builtin.stat:

@@ -1,0 +1,86 @@
+---
+- ansible.builtin.assert:
+    that:
+      - pull_key | length > 0
+      - pull_path | length > 0
+      - pull_host | length > 0
+      - pull_user | length > 0
+      - pull_port | string | length > 0
+      - mysql_user | length > 0
+      - mysql_password | length > 0
+
+- ansible.builtin.set_fact:
+    local_path: "/app/public"
+
+- name: Create SSH directory.
+  ansible.builtin.file:
+    path: "/app/.ssh"
+    state: directory
+    mode: "0700"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
+- name: Create pull_key file.
+  ansible.builtin.copy:
+    dest: "/app/.ssh/pull_key"
+    content: "{{ pull_key }}\n"
+    mode: "0600"
+
+- name: Add pull host to SSH config.
+  ansible.builtin.blockinfile:
+    path: "/app/.ssh/config"
+    marker: "# {mark} Pull Config"
+    create: true
+    mode: "0644"
+    block: |
+      Host pull-host
+        Hostname {{ pull_host }}
+        User {{ pull_user }}
+        Port {{ pull_port }}
+        IdentityFile /app/.ssh/pull_key
+        StrictHostKeyChecking no
+
+- name: Export remote database.
+  ansible.builtin.command: "wp --ssh=pull-host --path={{ pull_path }} --allow-root db export {{ pull_path }}/export.sql"
+  register: "cmd"
+  changed_when: "'Success:' in cmd.stdout"
+
+- name: Pull remote files.
+  ansible.builtin.command: "rsync -chavzP --delete --stats pull-host:{{ pull_path }}/ {{ local_path }}"
+  register: "cmd"
+  changed_when: "'receiving incremental file list' in cmd.stdout"
+
+- name: Fix file permissions.
+  ansible.builtin.command: "{{ item }}"
+  loop:
+    - find {{ local_path }} -type f -exec chmod 644 {} +
+    - find {{ local_path }} -type d -exec chmod 755 {} +
+  changed_when: true
+
+- name: Update configuration.
+  ansible.builtin.command: "wp --path={{ local_path }} config set {{ item }}"
+  loop:
+    - "DB_HOST '127.0.0.1'"
+    - "DB_NAME 'app'"
+    - "DB_USER '{{ mysql_user }}'"
+    - "DB_PASSWORD '{{ mysql_password }}'"
+  register: "cmd"
+  changed_when: "'Success:' in cmd.stdout"
+
+- name: Import database.
+  ansible.builtin.command: "wp --path={{ local_path }} db import {{ local_path }}/export.sql"
+  register: "cmd"
+  changed_when: "'Success:' in cmd.stdout"
+
+- name: Replace in database.
+  ansible.builtin.command: "wp --path={{ local_path }} search-replace {{ pull_search }} {{ pull_replace }}"
+  when:
+    - pull_search | length > 0
+    - pull_replace | length > 0
+  register: "cmd"
+  changed_when: "'Success:' in cmd.stdout"
+
+- name: Optimize the database.
+  ansible.builtin.command: "wp --path={{ local_path }} db optimize"
+  register: "cmd"
+  changed_when: "'Success:' in cmd.stdout"

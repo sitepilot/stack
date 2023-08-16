@@ -1,5 +1,16 @@
 ---
+- ansible.builtin.assert:
+    that:
+      - "'app' in stack"
+      - "'mysql' in stack"
+      - "'wpcli' in stack"
+
 - ansible.builtin.import_tasks: install.yml
   tags:
     - never
     - install
+
+- ansible.builtin.import_tasks: pull.yml
+  tags:
+    - never
+    - pull
