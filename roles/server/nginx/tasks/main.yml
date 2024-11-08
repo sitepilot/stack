@@ -1,0 +1,35 @@
+---
+- name: Ensure nginx is installed.
+  ansible.builtin.apt:
+    name:
+      - nginx
+      - libnginx-mod-stream
+    state: present
+    cache_valid_time: 3600
+  notify: reload nginx
+
+- name: Generate nginx certificate.
+  ansible.builtin.template:
+    src: "{{ item.template }}"
+    dest: "{{ item.destination }}"
+    mode: "0644"
+  loop:
+    - template: ssl.key.j2
+      destination: /etc/nginx/ssl.key
+    - template: ssl.cert.j2
+      destination: /etc/nginx/ssl.cert
+  when:
+    - nginx_ssl_key
+    - nginx_ssl_cert
+  notify: reload nginx
+
+- name: Generate nginx configuration.
+  ansible.builtin.template:
+    src: "{{ item.template }}"
+    dest: "{{ item.destination }}"
+    mode: "0644"
+  loop:
+    - template: nginx.conf.j2
+      destination: /etc/nginx/nginx.conf
+  notify: reload nginx
+  tags: configure-proxy

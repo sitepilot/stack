@@ -1,0 +1,9 @@
+---
+nginx_domain: sitepilotdev.com
+nginx_ssl_key: null
+nginx_ssl_cert: null
+nginx_real_ip_from: [ ]
+nginx_streams: [ ]
+#  -  container: text-d1x
+#     port: 22
+#     host_port: 2221

@@ -42,7 +42,9 @@ jobs:
           ssh-keygen -t rsa -f ~/.ssh/id_rsa -q -N ""
           lxc file push ~/.ssh/id_rsa.pub test-d1x/root/.ssh/authorized_keys
           lxc exec test-d1x chown root:root /root/.ssh/authorized_keys
-          lxc config device add test-d1x ssh proxy listen=tcp:0.0.0.0:2221 connect=tcp:127.0.0.1:22
 
-      - name: Test container provision roles
+      - name: Test server playbook
+        run: ansible-playbook server.yml
+
+      - name: Test container playbook
         run: ansible-playbook container.yml
