@@ -1,0 +1,40 @@
+---
+- name: Get php version.
+  command: php --version
+  when: php_version
+  register: test_php_version
+
+- name: Get wpcli version.
+  command: wp --version
+  when: wpcli_enabled
+  register: test_wpcli_version
+
+- name: Get composer version.
+  command: composer --version
+  when: composer_enabled
+  register: test_composer_version
+
+- name: Get node version.
+  command: node --version
+  when: node_version
+  register: test_node_version
+
+- name: Get mariadb version.
+  command: mariadb --version
+  when: database_type == 'mariadb'
+  register: test_mariadb_version
+
+- name: Get valkey version.
+  command: valkey-server --version
+  when: cache_type == 'valkey'
+  register: test_valkey_version
+
+- name: Run tests.
+  ansible.builtin.assert:
+    that:
+      - php_version and test_php_version is search(php_version|string)
+      - wpcli_enabled and test_wpcli_version is search("WP-CLI")
+      - composer_enabled and test_composer_version is search("Composer version")
+      - node_version and test_node_version is search(node_version|string)
+      - database_type == 'mariadb' and test_mariadb_version is search("mariadb")
+      - cache_type == 'valkey' and test_valkey_version is search("Server")
