@@ -20,6 +20,9 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('./requirements.txt') }}
           restore-keys: ${{ runner.os }}-pip-
 
+      - name: Install ansible collections
+        run: ansible-galaxy install -r requirements.yml --force
+
       - name: Install pip packages
         run: pip3 install -r ./requirements.txt
 
