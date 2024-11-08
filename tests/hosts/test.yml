@@ -4,7 +4,7 @@ servers:
     lxd-shared-1:
       ansible_connection: local
       nginx_streams:
-        - container: text-d1x
+        - container: test-d1x
           port: 22
           host_port: 2221
 
