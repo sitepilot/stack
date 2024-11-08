@@ -1,0 +1,13 @@
+{
+    "name": "sitepilot/stack",
+    "description": "Effortlessly provision high-performance cloud servers and containers, fine-tuned for WordPress and Laravel.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sitepilot",
+            "email": "support@sitepilot.io"
+        }
+    ],
+    "require": {}
+}
