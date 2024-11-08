@@ -1,0 +1,17 @@
+---
+php_version: null
+php_memory_limit: 256M
+php_upload_limit: 100M
+php_date_timezone: UTC
+php_max_input_vars: 10000
+php_max_execution_time: 300
+
+php_fpm_control: dynamic
+php_fpm_max_children: 5
+php_fpm_start_servers: 2
+php_fpm_min_spare_servers: 1
+php_fpm_max_spare_servers: 3
+
+php_error_log: "{{ container_logs_path }}/php.log"
+php_mail_log: "{{ container_logs_path }}/php-mail.log"
+php_fpm_log: "{{ container_logs_path }}/php-fpm.log"

@@ -1,0 +1,18 @@
+---
+- name: Check if wpcli is already installed.
+  ansible.builtin.stat:
+    path: "{{ wpcli_path }}"
+  register: wpcli_bin
+
+- name: Download and install wpcli.
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar"
+    dest: "{{ wpcli_path }}"
+    mode: "0755"
+  when: not wpcli_bin.stat.exists
+
+- name: Update wpcli to the latest version.
+  ansible.builtin.command: wp cli update
+  register: result
+  changed_when: "'Success: Updated' in result.stdout"
+  when: wpcli_bin.stat.exists

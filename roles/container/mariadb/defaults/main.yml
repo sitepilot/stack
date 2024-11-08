@@ -1,0 +1,2 @@
+---
+mariadb_enabled: "{{ database_type == 'mariadb' }}"

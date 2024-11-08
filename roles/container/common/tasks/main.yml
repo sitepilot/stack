@@ -1,0 +1,65 @@
+---
+- name: Validate variables.
+  ansible.builtin.assert:
+    that:
+      - user_name | length > 0
+      - container_type == None or container_type in container_types
+      - server_type == None or server_type in server_types
+      - database_type == None or database_type in database_types
+      - cache_type == None or cache_type in cache_types
+
+- name: Install common packages.
+  ansible.builtin.apt:
+    name:
+      - git
+      - gnupg2
+      - curl
+      - wget
+      - nano
+      - zip
+      - unzip
+      - logrotate
+      - unattended-upgrades
+    state: present
+    cache_valid_time: 3600
+
+- name: Generate welcome message.
+  ansible.builtin.template:
+    src: welcome.j2
+    dest: /etc/update-motd.d/00-welcome
+    mode: "0755"
+
+- name: Cleanup motd files.
+  ansible.builtin.file:
+    path: "/etc/update-motd.d/{{ item }}"
+    state: absent
+  loop:
+    - 10-help-text
+    - 50-motd-news
+    - 50-landscape-sysinfo
+    - 90-updates-available
+
+- name: Generate unattended upgrades configuration.
+  ansible.builtin.template:
+    src: unattended_upgrades.j2
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart unattended-upgrades
+
+- name: Generate logrotate configuration.
+  ansible.builtin.template:
+    src: logrotate.j2
+    dest: "/etc/logrotate.d/container"
+    mode: "0644"
+
+- name: Generate sshd configuration.
+  ansible.builtin.template:
+    src: sshd.conf.j2
+    dest: "/etc/ssh/sshd_config.d/10-container.conf"
+    mode: "0644"
+  notify: restart ssh
+
+- name: Import user tasks.
+  ansible.builtin.import_tasks: user.yml

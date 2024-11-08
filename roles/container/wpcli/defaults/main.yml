@@ -1,0 +1,2 @@
+---
+wpcli_enabled: "{{ php_version != None }}"

@@ -1,0 +1,7 @@
+---
+- name: Ensure valkey is installed.
+  ansible.builtin.apt:
+    name: valkey-server
+    state: present
+    cache_valid_time: 3600
+  notify: restart valkey

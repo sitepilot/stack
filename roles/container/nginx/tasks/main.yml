@@ -1,0 +1,8 @@
+---
+- name: Import install tasks.
+  ansible.builtin.import_tasks: install.yml
+  when: nginx_enabled
+
+- name: Import uninstall tasks.
+  ansible.builtin.import_tasks: uninstall.yml
+  when: not nginx_enabled

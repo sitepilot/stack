@@ -1,0 +1,9 @@
+---
+migration_host: null
+migration_port: 22
+migration_user: 'root'
+migration_path: null
+migration_private_key: null
+migration_type: "{{ container_type }}"
+migration_local_url: "{{ container_url }}"
+migration_local_path: "{{ container_files_path }}"

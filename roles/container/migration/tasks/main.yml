@@ -1,0 +1,91 @@
+---
+- name: Validate variables.
+  ansible.builtin.assert:
+    that:
+      - migration_port > 0
+      - migration_host | length > 0
+      - migration_user | length > 0
+      - migration_path | length > 0
+      - migration_private_key | length > 0
+
+- name: Create SSH directory.
+  ansible.builtin.file:
+    path: "~/.ssh"
+    mode: "0700"
+    state: directory
+
+- name: Create migration_key file.
+  ansible.builtin.copy:
+    dest: "~/.ssh/migration_key"
+    content: "{{ migration_private_key }}\n"
+    mode: "0600"
+
+- name: Add migration host to SSH config.
+  ansible.builtin.blockinfile:
+    path: "~/.ssh/config"
+    marker: "# {mark} Migration Config"
+    create: true
+    mode: "0644"
+    block: |
+      Host migration_host
+        Hostname {{ migration_host }}
+        User {{ migration_user }}
+        Port {{ migration_port }}
+        IdentityFile ~/.ssh/migration_key
+        StrictHostKeyChecking no
+
+- name: Export remote WordPress database.
+  ansible.builtin.command: "{{ wpcli_path }} --ssh=migration_host --path={{ migration_path }} --allow-root db export {{ migration_path }}/export.sql"
+  register: result
+  changed_when: "'Success' in result.stdout"
+  when: migration_type == 'wordpress'
+
+- name: Pull remote files.
+  ansible.builtin.command: "rsync -chavzP --no-links --delete --stats migration_host:{{ migration_path }}/ {{ migration_local_path }}"
+  register: result
+  changed_when: "'receiving incremental file list' in result.stdout"
+
+- name: Fix file permissions.
+  ansible.builtin.command: "{{ item }}"
+  loop:
+    - find {{ migration_local_path }} -type f -exec chmod 644 {} +
+    - find {{ migration_local_path }} -type d -exec chmod 755 {} +
+  changed_when: ''
+
+- name: Configure WordPress.
+  when: migration_type == 'wordpress'
+  block:
+    - name: Update WordPress configuration.
+      ansible.builtin.command: "{{ wpcli_path }} --path={{ migration_local_path }} config set {{ item }}"
+      loop:
+        - "DB_HOST '{{ wp_db_host }}'"
+        - "DB_NAME '{{ wp_db_name }}'"
+        - "DB_USER '{{ wp_db_user }}'"
+        - "DB_PASSWORD '{{ wp_db_password }}'"
+      register: result
+      changed_when: "'Success' in result.stdout"
+
+    - name: Import WordPress database.
+      ansible.builtin.command: "{{ wpcli_path }} --path={{ migration_local_path }} db import {{ migration_local_path }}/export.sql"
+      register: result
+      changed_when: "'Success' in result.stdout"
+
+    - name: Replace WordPress URL in database.
+      ansible.builtin.command: "{{ wpcli_path }} --path={{ migration_local_path }} option get siteurl"
+      register: remote_url
+      changed_when: remote_url.stdout
+
+    - name: Replace WordPress URL in database.
+      ansible.builtin.command: "{{ wpcli_path }} --path={{ migration_local_path }} search-replace {{ remote_url.stdout }} {{ migration_local_url }}"
+      register: result
+      changed_when: "'Success' in result.stdout"
+
+    - name: Optimize WordPress database.
+      ansible.builtin.command: "{{ wpcli_path }} --path={{ migration_local_path }} db optimize"
+      register: result
+      changed_when: "'Success' in result.stdout"
+
+- name: Ensure export.sql file is removed.
+  ansible.builtin.file:
+    path: "{{ migration_local_path }}/export.sql"
+    state: absent

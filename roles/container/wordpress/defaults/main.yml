@@ -1,0 +1,14 @@
+---
+wp_enabled: "{{ container_type == 'wordpress' }}"
+wp_url: "{{ container_url }}"
+wp_title: "{{ container_name }}"
+wp_user: "{{ user_name }}"
+wp_password: null
+wp_email: "{{ container_name }}@sitepilot.io"
+wp_path: "{{ container_files_path }}"
+wp_plugins: [ ]
+
+wp_db_host: "localhost"
+wp_db_name: "{{ database_name }}"
+wp_db_user: "{{ database_user }}"
+wp_db_password: "{{ database_password }}"

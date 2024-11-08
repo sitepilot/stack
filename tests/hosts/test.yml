@@ -1,0 +1,17 @@
+---
+containers:
+  hosts:
+    test-d1x:
+      ansible_host: 127.0.0.1
+      ansible_port: 2221
+      ansible_user: root
+      container_name: test-d1x
+      container_type: wordpress
+      container_url: http://test-d1x.onsitepilot.com
+      php_version: "8.3"
+      node_version: 22
+      server_type: nginx
+      database_type: mariadb
+      database_password: secret
+      cache_type: valkey
+      wp_password: secret

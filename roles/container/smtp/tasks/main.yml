@@ -1,0 +1,14 @@
+---
+- name: Ensure msmtp is installed.
+  ansible.builtin.apt:
+    name:
+      - msmtp
+      - msmtp-mta
+    state: present
+    cache_valid_time: 3600
+
+- name: Generate msmtp configuration.
+  ansible.builtin.template:
+    src: msmtprc.j2
+    dest: "/etc/msmtprc"
+    mode: "0644"

@@ -1,0 +1,126 @@
+# {{ ansible_managed }}
+user {{ user_name }} {{ user_group }};
+pid /run/nginx.pid;
+error_log {{ server_error_log }};
+include /etc/nginx/modules-enabled/*.conf;
+
+worker_processes auto;
+worker_rlimit_nofile 8192;
+
+events {
+	worker_connections 8000;
+	multi_accept       on;
+}
+
+http {
+	server_names_hash_bucket_size 128;
+
+    # HTTP
+    sendfile      on;
+    tcp_nopush    on;
+    tcp_nodelay   on;
+    server_tokens off;
+
+    # Limits
+	  keepalive_timeout     15;
+    client_body_timeout   30;
+    client_header_timeout 30;
+    send_timeout          30;
+    client_max_body_size  {{ server_upload_limit }};
+
+    # MIME Types
+    include      mime.types;
+    default_type application/octet-stream;
+
+    # FastCGI
+    fastcgi_buffers 16  16k;
+    fastcgi_buffer_size 32k;
+
+    # Logs
+    access_log {{ server_access_log }};
+
+	  # Gzip
+    gzip              on;
+    gzip_vary         on;
+    gzip_proxied      any;
+    gzip_comp_level   5;
+    gzip_http_version 1.1;
+    gzip_min_length   256;
+    gzip_types
+    	application/atom+xml
+    	application/javascript
+    	application/json
+    	application/ld+json
+    	application/manifest+json
+    	application/rss+xml
+    	application/vnd.geo+json
+    	application/vnd.ms-fontobject
+    	application/x-font-ttf
+    	application/x-web-app-manifest+json
+    	application/xhtml+xml
+    	application/xml
+    	font/opentype
+    	image/bmp
+    	image/svg+xml
+    	image/x-icon
+    	text/cache-manifest
+    	text/css
+    	text/plain
+    	text/vcard
+    	text/vnd.rim.location.xloc
+    	text/vtt
+    	text/x-component
+    	text/x-cross-domain-policy;
+
+    real_ip_recursive on;
+    set_real_ip_from 0.0.0.0/0;
+    real_ip_header X-Forwarded-For;
+
+    map $http_x_forwarded_proto $fastcgi_https {
+        https   on;
+        default $https;
+    }
+
+    server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        server_name container;
+
+        root {{ server_public_path }};
+
+        location = /favicon.ico {
+            log_not_found off;
+            access_log    off;
+        }
+
+        location = /robots.txt {
+            log_not_found off;
+            access_log    off;
+        }
+
+{% if php_version %}
+        index index.php index.html index.htm;
+
+        location /-/ping {
+            include       fastcgi_params;
+            access_log    off;
+            fastcgi_param SCRIPT_NAME /-/ping;
+            fastcgi_param SCRIPT_FILENAME /-/ping;
+            fastcgi_pass  unix:{{ php_fpm_listen_path }};
+        }
+
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        location ~ \.php$ {
+            include       snippets/fastcgi-php.conf;
+            fastcgi_param HTTPS $fastcgi_https if_not_empty;
+            fastcgi_pass  unix:{{ php_fpm_listen_path }};
+        }
+{% else %}
+        index index.html index.htm;
+{% endif %}
+    }
+}

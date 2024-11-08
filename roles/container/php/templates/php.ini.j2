@@ -1,0 +1,10 @@
+; {{ ansible_managed }}
+memory_limit = {{ php_memory_limit }}
+post_max_size = {{ php_upload_limit }}
+upload_max_filesize = {{ php_upload_limit }}
+date.timezone = {{ php_date_timezone }}
+max_input_vars = {{ php_max_input_vars }}
+max_execution_time = {{ php_max_execution_time }}
+error_log = {{ php_error_log }}
+mail.log = {{ php_mail_log }}
+sendmail_path=/usr/bin/msmtp -t

@@ -1,0 +1,34 @@
+---
+- name: Create site group.
+  ansible.builtin.group:
+    name: "{{ user_group }}"
+    state: present
+
+- name: Create site user.
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    group: "{{ user_group }}"
+    home: "{{ container_home_path }}"
+    password: "{{ user_password }}"
+    groups: "{{ user_groups }}"
+    shell: /bin/bash
+    create_home: true
+
+- name: Create user directories.
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: "0755"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_group }}"
+  loop:
+    - "{{ container_logs_path }}"
+    - "{{ container_files_path }}"
+
+- name: Add authorized keys.
+  ansible.posix.authorized_key:
+    user: "{{ user_name }}"
+    key: "{{ user_auth_keys | join('\n') }}"
+    state: present
+    exclusive: true
+  when: user_auth_keys | length > 0

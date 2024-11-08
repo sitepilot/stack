@@ -1,0 +1,8 @@
+---
+- name: Uninstall nginx packages.
+  ansible.builtin.apt:
+    name: nginx
+    state: absent
+    autoremove: true
+    purge: true
+  failed_when: false

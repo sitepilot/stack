@@ -1,0 +1,5 @@
+---
+- name: Uninstall composer.
+  ansible.builtin.file:
+    path: "{{ composer_path }}"
+    state: absent

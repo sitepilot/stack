@@ -1,0 +1,14 @@
+---
+container_types:
+  - php
+  - laravel
+  - wordpress
+
+server_types:
+  - nginx
+
+database_types:
+  - mariadb
+
+cache_types:
+  - valkey

@@ -1,0 +1,27 @@
+---
+container_name: null
+container_type: null
+container_url: null
+container_home_path: "/home/container"
+container_logs_path: "{{ container_home_path }}/logs"
+container_files_path: "{{ container_home_path }}/files"
+
+user_name: "{{ container_name | replace('-', '_') }}"
+user_group: "{{ user_name }}"
+user_groups: [ ]
+user_password: !
+user_auth_keys: [ ]
+
+server_type: null
+server_public_dir: /
+server_public_path: "{{ container_files_path }}{{ server_public_dir }}"
+server_upload_limit: "{{ php_upload_limit | default('100M') }}"
+server_error_log: "{{ container_logs_path }}/error.log"
+server_access_log: "{{ container_logs_path }}/access.log"
+
+database_type: null
+database_name: "{{ user_name }}"
+database_user: "{{ user_name }}"
+database_password: null
+
+cache_type: null

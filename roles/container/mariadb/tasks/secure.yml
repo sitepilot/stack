@@ -1,0 +1,36 @@
+---
+- name: Get list of hosts for the anonymous user.
+  ansible.builtin.command: mysql -NBe "SELECT Host FROM mysql.user WHERE User = ''"
+  register: mariadb_anonymous_hosts
+  changed_when: ''
+  check_mode: false
+
+- name: Remove anonymous database users.
+  community.mysql.mysql_user:
+    name: ""
+    host: "{{ item }}"
+    state: absent
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+  with_items: "{{ mariadb_anonymous_hosts.stdout_lines | default([]) }}"
+
+- name: Remove test database.
+  community.mysql.mysql_db:
+    name: 'test'
+    state: absent
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+
+- name: Create database.
+  community.mysql.mysql_db:
+    name: "{{ database_name }}"
+    state: present
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+
+- name: Create database user.
+  community.mysql.mysql_user:
+    name: "{{ database_user }}"
+    password: "{{ database_password }}"
+    priv: "{{ database_name }}.*:ALL"
+    state: present
+    host: "%"
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+  no_log: true

@@ -1,0 +1,1 @@
+ansible-lint[community,yamllint]==6.22.1

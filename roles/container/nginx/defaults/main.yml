@@ -1,0 +1,2 @@
+---
+nginx_enabled: "{{ server_type == 'nginx' }}"

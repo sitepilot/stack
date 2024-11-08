@@ -1,0 +1,24 @@
+---
+- name: Validate variables.
+  ansible.builtin.assert:
+    that:
+      - database_password | length > 0
+
+- name: Ensure mariadb is installed.
+  ansible.builtin.apt:
+    name:
+      - mariadb-server
+      - python3-pymysql
+    state: present
+    cache_valid_time: 3600
+  notify: restart mariadb
+
+- name: Generate mariadb configuration.
+  ansible.builtin.template:
+    src: mariadb.conf.j2
+    dest: /etc/mysql/mariadb.conf.d/80-container.conf
+    mode: "0644"
+  notify: restart mariadb
+
+- name: Import secure tasks.
+  ansible.builtin.import_tasks: secure.yml

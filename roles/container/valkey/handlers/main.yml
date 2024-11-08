@@ -1,0 +1,6 @@
+---
+- name: restart valkey
+  ansible.builtin.service:
+    name: valkey-server
+    state: restarted
+    enabled: true

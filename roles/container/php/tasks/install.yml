@@ -1,0 +1,73 @@
+---
+- name: Validate variables.
+  ansible.builtin.assert:
+    that:
+      - php_version in php_versions
+
+- name: Add php repository key.
+  ansible.builtin.apt_key:
+    id: b8dc7e53946656efbce4c1dd71daeaab4ad4cab6
+    keyserver: keyserver.ubuntu.com
+    keyring: /etc/apt/trusted.gpg.d/php.gpg
+
+- name: Add php repository.
+  ansible.builtin.apt_repository:
+    repo: "deb https://ppa.launchpadcontent.net/ondrej/php/ubuntu {{ ansible_distribution_release }} main"
+    filename: php
+    update_cache: true
+
+- name: Ensure packages are installed.
+  ansible.builtin.apt:
+    name:
+      - php{{ php_version }}-apcu
+      - php{{ php_version }}-bcmath
+      - php{{ php_version }}-bz2
+      - php{{ php_version }}-cli
+      - php{{ php_version }}-common
+      - php{{ php_version }}-curl
+      - php{{ php_version }}-fpm
+      - php{{ php_version }}-gd
+      - php{{ php_version }}-igbinary
+      - php{{ php_version }}-imagick
+      - php{{ php_version }}-imap
+      - php{{ php_version }}-intl
+      - php{{ php_version }}-mbstring
+      - php{{ php_version }}-memcached
+      - php{{ php_version }}-msgpack
+      - php{{ php_version }}-mysql
+      - php{{ php_version }}-odbc
+      - php{{ php_version }}-opcache
+      - php{{ php_version }}-readline
+      - php{{ php_version }}-redis
+      - php{{ php_version }}-soap
+      - php{{ php_version }}-sqlite3
+      - php{{ php_version }}-xml
+      - php{{ php_version }}-zip
+    state: present
+    cache_valid_time: 3600
+  notify: restart php-fpm
+
+- name: Set php version.
+  community.general.alternatives:
+    name: php
+    path: /usr/bin/php{{ php_version }}
+
+- name: Remove default fpm pool.
+  ansible.builtin.file:
+    path: "/etc/php/{{ php_version }}/fpm/pool.d/www.conf"
+    state: absent
+  notify: restart php-fpm
+
+- name: Generate php configuration.
+  ansible.builtin.template:
+    src: "{{ item.template }}"
+    dest: "{{ item.destination }}"
+    mode: "0644"
+  loop:
+    - template: container.conf.j2
+      destination: "/etc/php/{{ php_version }}/fpm/pool.d/container.conf"
+    - template: php.ini.j2
+      destination: "/etc/php/{{ php_version }}/cli/conf.d/50-container.ini"
+    - template: php.ini.j2
+      destination: "/etc/php/{{ php_version }}/fpm/conf.d/50-container.ini"
+  notify: restart php-fpm

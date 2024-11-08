@@ -1,0 +1,15 @@
+---
+- name: Uninstall php packages.
+  ansible.builtin.apt:
+    name: "php{{ item }}-*"
+    state: absent
+    autoremove: true
+    purge: true
+  loop: "{{ php_versions }}"
+  failed_when: false
+
+- name: Cleanup php files.
+  ansible.builtin.file:
+    name: "/etc/php/{{ item }}"
+    state: absent
+  loop: "{{ php_versions }}"

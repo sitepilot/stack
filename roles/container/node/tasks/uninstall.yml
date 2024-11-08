@@ -1,0 +1,10 @@
+---
+- name: Uninstall node packages.
+  ansible.builtin.apt:
+    name:
+      - nodejs
+      - npm
+    state: absent
+    autoremove: true
+    purge: true
+  failed_when: false

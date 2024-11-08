@@ -1,0 +1,8 @@
+---
+- name: Import install tasks.
+  ansible.builtin.import_tasks: install.yml
+  when: php_version
+
+- name: Import uninstall tasks.
+  ansible.builtin.import_tasks: uninstall.yml
+  when: not php_version

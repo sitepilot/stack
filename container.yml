@@ -1,0 +1,35 @@
+---
+- hosts: "{{ playbook_hosts | default('containers') }}"
+  become: true
+  roles:
+    - name: container/common
+      tags: common
+
+    - name: container/smtp
+      tags: smtp
+
+    - name: container/php
+      tags: php
+
+    - name: container/composer
+      tags: composer
+
+    - name: container/wpcli
+      tags: wpcli
+
+    - name: container/node
+      tags: node
+
+    - name: container/nginx
+      tags: nginx
+
+    - name: container/mariadb
+      tags: mariadb
+
+    - name: container/valkey
+      tags: valkey
+
+    - name: container/wordpress
+      tags: wordpress
+      become: true
+      become_user: "{{ user_name }}"

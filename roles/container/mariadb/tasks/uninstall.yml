@@ -1,0 +1,9 @@
+---
+- name: Uninstall mariadb packages.
+  ansible.builtin.apt:
+    name:
+      - mariadb-server
+    state: absent
+    autoremove: true
+    purge: true
+  failed_when: false

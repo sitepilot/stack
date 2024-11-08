@@ -1,0 +1,5 @@
+---
+- name: Uninstall wpcli.
+  ansible.builtin.file:
+    path: "{{ wpcli_path }}"
+    state: absent

@@ -1,0 +1,12 @@
+---
+- name: restart unattended-upgrades
+  ansible.builtin.service:
+    name: unattended-upgrades
+    state: restarted
+    enabled: true
+
+- name: restart ssh
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+    enabled: true
