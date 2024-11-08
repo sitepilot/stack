@@ -1,0 +1,9 @@
+---
+profile: production
+
+skip_list:
+  - no-handler
+  - name[casing]
+  - yaml[brackets]
+  - var-naming[no-role-prefix]
+  - command-instead-of-module
