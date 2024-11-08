@@ -50,3 +50,15 @@
     chdir: "{{ wp_path }}"
   register: result
   changed_when: "'Installed' in result.stdout"
+
+- name: Create wpcli config directory.
+  ansible.builtin.file:
+    path: "{{ container_home_path }}/.wp-cli"
+    mode: "0755"
+    state: directory
+
+- name: Generate wpcli configuration.
+  ansible.builtin.template:
+    src: wpcli.yml.j2
+    dest: "{{ container_home_path }}/.wp-cli/config.yml"
+    mode: "0644"
