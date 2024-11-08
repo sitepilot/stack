@@ -44,8 +44,5 @@ jobs:
           lxc exec test-d1x chown root:root /root/.ssh/authorized_keys
           lxc config device add test-d1x ssh proxy listen=tcp:0.0.0.0:2221 connect=tcp:127.0.0.1:22
 
-#      - name: Setup tmate session
-#        uses: mxschmitt/action-tmate@v3
-
       - name: Test container provision roles
         run: ansible-playbook container.yml

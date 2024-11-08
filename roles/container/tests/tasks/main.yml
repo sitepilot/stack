@@ -1,32 +1,38 @@
 ---
 - name: Get php version.
-  command: php --version
+  ansible.builtin.command: php --version
   when: php_version
+  changed_when: false
   register: test_php_version
 
 - name: Get wpcli version.
-  command: wp --version
+  ansible.builtin.command: wp --version
   when: wpcli_enabled
+  changed_when: false
   register: test_wpcli_version
 
 - name: Get composer version.
-  command: composer --version
+  ansible.builtin.command: composer --version
   when: composer_enabled
+  changed_when: false
   register: test_composer_version
 
 - name: Get node version.
-  command: node --version
+  ansible.builtin.command: node --version
   when: node_version
+  changed_when: false
   register: test_node_version
 
 - name: Get mariadb version.
-  command: mariadb --version
+  ansible.builtin.command: mariadb --version
   when: database_type == 'mariadb'
+  changed_when: false
   register: test_mariadb_version
 
 - name: Get valkey version.
-  command: valkey-server --version
+  ansible.builtin.command: valkey-server --version
   when: cache_type == 'valkey'
+  changed_when: false
   register: test_valkey_version
 
 - name: Run tests.
