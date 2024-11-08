@@ -35,6 +35,13 @@
   changed_when: false
   register: test_valkey_version
 
+- name: Check if wordpress is installed.
+  ansible.builtin.command: wp core is-installed
+  when: container_type == 'wordpress'
+  changed_when: false
+  args:
+    chdir: "{{ container_files_path }}"
+
 - name: Run tests.
   ansible.builtin.assert:
     that:
