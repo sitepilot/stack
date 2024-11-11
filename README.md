@@ -12,6 +12,8 @@ We've open-sourced these Ansible playbooks so you can see exactly how our contai
 
 ### Server
 
+Below is a list of the software that will be installed on each LXD-managed host.
+
 * **Nginx** - Nginx is installed to forward (proxy) web and SSH traffic to the correct container.
 
 ### Container
