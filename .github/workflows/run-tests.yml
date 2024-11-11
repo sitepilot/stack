@@ -35,13 +35,13 @@ jobs:
 
       - name: Create test containers
         run: |
-          lxc launch ubuntu:24.04 test-d1x
+          lxc launch ubuntu:24.04 test-1
 
       - name: Setup container SSH keys
         run: |
           ssh-keygen -t rsa -f ~/.ssh/id_rsa -q -N ""
-          lxc file push ~/.ssh/id_rsa.pub test-d1x/root/.ssh/authorized_keys
-          lxc exec test-d1x chown root:root /root/.ssh/authorized_keys
+          lxc file push ./ssh/test.pub test-1/root/.ssh/authorized_keys
+          lxc exec test-1 chown root:root /root/.ssh/authorized_keys
 
       - name: Test server playbook
         run: ansible-playbook server.yml
