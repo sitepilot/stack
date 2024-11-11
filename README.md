@@ -26,3 +26,5 @@ Below is a list of the software that can be installed in a container. Only the n
 * **MariaDB** - Installed when `database_type` is set to `mariadb`.
 * **Valkey** - Installed when `cache_type` is set to `valkey`.
 * **WordPress** - Installed when `container_type` is set to `wordpress`.
+
+If software does not need to be installed, it will be automatically removed from the container.
