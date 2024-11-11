@@ -18,21 +18,21 @@ own hosting environment.
 
 Below is a list of the software that will be installed on a LXD-managed host.
 
-* **Nginx** - Nginx is installed to forward (proxy) web and SSH traffic to the correct container.
+* **[Nginx](roles/server/nginx/defaults/main.yml)** - Nginx is installed to forward (proxy) web and SSH traffic to the correct container.
 
 ### Container
 
 Below is a list of the software that can be installed in a container. Only the necessary software is included, 
 ensuring a lightweight and efficient environment tailored specifically to run the site.
 
-* **PHP** - Installed when `php_version` is specified.
-* **Composer** - Installed when `php_version` is specified.
-* **WPCLI** - Installed when `php_version` is specified.
-* **Node.js** - Installed when `node_version` is specified.
-* **Nginx** - Installed when `server_type` is set to `nginx`.
-* **MariaDB** - Installed when `database_type` is set to `mariadb`.
-* **Valkey** - Installed when `cache_type` is set to `valkey`.
-* **WordPress** - Installed when `container_type` is set to `wordpress`.
+* **[PHP](roles/container/php/defaults/main.yml)** - Installed when `php_version` is specified.
+* **[Composer](roles/container/composer/defaults/main.yml)** - Installed when `php_version` is specified.
+* **[WPCLI](roles/container/wpcli/defaults/main.yml)** - Installed when `php_version` is specified.
+* **[Node.js](roles/container/node/defaults/main.yml)** - Installed when `node_version` is specified.
+* **[Nginx](roles/container/nginx/defaults/main.yml)** - Installed when `server_type` is set to `nginx`.
+* **[MariaDB](roles/container/mariadb/defaults/main.yml)** - Installed when `database_type` is set to `mariadb`.
+* **[Valkey](roles/container/valkey/defaults/main.yml)** - Installed when `cache_type` is set to `valkey`.
+* **[WordPress](roles/container/wordpress/defaults/main.yml)** - Installed when `container_type` is set to `wordpress`.
 
 If software does not need to be installed, it will be automatically removed from the container.
 
