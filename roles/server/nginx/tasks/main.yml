@@ -31,5 +31,19 @@
   loop:
     - template: nginx.conf.j2
       destination: /etc/nginx/nginx.conf
+    - template: errors.conf.j2
+      destination: /etc/nginx/snippets/errors.conf
+    - template: proxy.conf.j2
+      destination: /etc/nginx/snippets/proxy.conf
+    - template: errors/404.html.j2
+      destination: /usr/share/nginx/html/custom_404.html
+    - template: errors/413.html.j2
+      destination: /usr/share/nginx/html/custom_413.html
+    - template: errors/502.html.j2
+      destination: /usr/share/nginx/html/custom_502.html
+    - template: errors/503.html.j2
+      destination: /usr/share/nginx/html/custom_503.html
+    - template: errors/504.html.j2
+      destination: /usr/share/nginx/html/custom_504.html
   notify: reload nginx
   tags: configure-proxy

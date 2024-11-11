@@ -54,13 +54,24 @@ http {
         listen 80 default_server;
         listen [::]:80 default_server;
 {% if nginx_ssl_cert and nginx_ssl_key %}
-        listen      443 http2 ssl default_server;
-        listen      [::]:443 http2 ssl default_server;
+        listen 443 http2 ssl default_server;
+        listen [::]:443 http2 ssl default_server;
 {% endif %}
 
         server_name _;
 
-        return 444;
+        include snippets/errors.conf;
+
+        location / {
+          return 404;
+        }
+    }
+{% for proxy in nginx_proxies %}
+{% set map_var = proxy.container | replace('-', '_') %}
+
+    # {{ proxy.container }}
+    map "" ${{ map_var }} {
+        default {{ proxy.container }};
     }
 
     server {
@@ -71,34 +82,33 @@ http {
         listen      [::]:443 http2 ssl;
 {% endif %}
 
-        server_name ~^(?<name>[\w-]+)\.{{ nginx_domain | replace('.', '\.') }}$;
+        server_name {{ proxy.hosts | default([proxy.container]) | join(' ') }};
+
+        include snippets/errors.conf;
 
         location / {
-            proxy_pass        http://$name;
-            proxy_redirect    off;
-            proxy_buffering   off;
-            proxy_buffer_size 128k;
-            proxy_buffers 100 128k;
-            proxy_set_header  Host $host;
-            proxy_set_header  X-Real-IP $remote_addr;
-            proxy_set_header  X-Forwarded-For $remote_addr;
-            proxy_set_header  X-Forwarded-Proto $proxy_forwarded_proto;
+            proxy_pass http://${{ map_var }};
+            include    snippets/proxy.conf;
         }
     }
+{% endfor %}
 }
 
 stream {
     resolver {{ ansible_lxdbr0.ipv4.address }};
+{% for proxy in nginx_proxies %}
+{% for stream in proxy.ports | default([]) %}
+{% set map_var = proxy.container | replace('-', '_') + '_' + stream.port | string %}
 
-{% for stream in nginx_streams %}
-    map "" ${{ stream.container | replace('-', '_') }}_{{ stream.port }} {
-        default {{ stream.container }}:{{ stream.port }};
+    # {{ proxy.container }} - {{ stream.port }}
+    map "" ${{ map_var }} {
+        default {{ proxy.container }}:{{ stream.port }};
     }
 
     server {
         listen {{ stream.host_port }};
-        proxy_pass ${{ stream.container | replace('-', '_') }}_{{ stream.port }};
+        proxy_pass ${{ map_var }};
     }
-
+{% endfor %}
 {% endfor %}
 }
