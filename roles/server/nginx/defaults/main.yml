@@ -1,5 +1,4 @@
 ---
-nginx_domain: sitepilotdev.com
 nginx_ssl_key: null
 nginx_ssl_cert: null
 nginx_real_ip_from: [ ]
