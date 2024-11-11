@@ -4,9 +4,13 @@ Effortlessly provision high-performance Linux Containers (LXC), fine-tuned for W
 
 ## About
 
-[Sitepilot](https://sitepilot.io) utilizes LXD-managed hosts and orchestrated LXC software containers for each site. This means that every site is housed in its own isolated container, complete with all the software resources required to run it. The resources are 100% private and are not shared with anyone else.
+[Sitepilot](https://sitepilot.io) utilizes LXD-managed hosts and orchestrated LXC software containers for each site. 
+This means that every site is housed in its own isolated container, complete with all the software resources required 
+to run it. The resources are 100% private and are not shared with anyone else.
 
-We've open-sourced these Ansible playbooks so you can see exactly how our containers are configured, or even use them yourself to host web applications. This gives you full transparency into our setup and the flexibility to adapt it to your own hosting environment.
+We've open-sourced these Ansible playbooks so you can see exactly how our containers and hosts are configured, or even 
+use them yourself to host sites. This gives you full transparency into our setup and the flexibility to adapt it to your 
+own hosting environment.
 
 ## Software
 
@@ -18,7 +22,8 @@ Below is a list of the software that will be installed on a LXD-managed host.
 
 ### Container
 
-Below is a list of the software that can be installed in a container. Only the necessary software is included, ensuring a lightweight and efficient environment tailored specifically to run the application.
+Below is a list of the software that can be installed in a container. Only the necessary software is included, 
+ensuring a lightweight and efficient environment tailored specifically to run the site.
 
 * **PHP** - Installed when `php_version` is specified.
 * **Composer** - Installed when `php_version` is specified.
@@ -33,4 +38,5 @@ If software does not need to be installed, it will be automatically removed from
 
 ## Security Vulnerabilities
 
-Please don't disclose security-related issues publicly. If you discover a security vulnerability within Laravel, please send an email to support at support@sitepilot.io. All security vulnerabilities will be promptly addressed.
+Please don't disclose security-related issues publicly. If you discover a security vulnerability within Laravel, 
+please send an email to support at support@sitepilot.io. All security vulnerabilities will be promptly addressed.
