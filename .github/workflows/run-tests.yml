@@ -42,6 +42,7 @@ jobs:
           ssh-keygen -t rsa -f ~/.ssh/id_rsa -q -N ""
           lxc file push ./ssh/test.pub test-1/root/.ssh/authorized_keys
           lxc exec test-1 chown root:root /root/.ssh/authorized_keys
+          chmod 600 ./ssh/test.key
 
       - name: Test server playbook
         run: ansible-playbook server.yml
