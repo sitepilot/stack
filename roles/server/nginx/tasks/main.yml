@@ -8,16 +8,16 @@
     cache_valid_time: 3600
   notify: reload nginx
 
-- name: Generate nginx certificate.
-  ansible.builtin.template:
-    src: "{{ item.template }}"
-    dest: "{{ item.destination }}"
-    mode: "0644"
+- name: Create nginx certificate and key.
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    content: "{{ item.content }}"
+    mode: "0600"
   loop:
-    - template: ssl.key.j2
-      destination: /etc/nginx/ssl.key
-    - template: ssl.cert.j2
-      destination: /etc/nginx/ssl.cert
+    - dest: /etc/nginx/ssl.key
+      content: "{{ nginx_ssl_key }}"
+    - dest: /etc/nginx/ssl.cert
+      content: "{{ nginx_ssl_cert }}"
   when:
     - nginx_ssl_key
     - nginx_ssl_cert
