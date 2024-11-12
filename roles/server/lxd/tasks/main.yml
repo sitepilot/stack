@@ -1,0 +1,58 @@
+---
+- name: Enable API.
+  ansible.builtin.command: lxc config set core.https_address "[::]:8443"
+  changed_when: false
+
+- name: Provision client certificate.
+  when: lxd_client_cert | length > 0
+  block:
+    - name: Create client certificate.
+      ansible.builtin.copy:
+        dest: "/root/autopilot-client.cert"
+        content: "{{ lxd_client_cert }}"
+        mode: "0600"
+      register: cert
+
+    - name: Get client certificates.
+      ansible.builtin.command: lxc config trust list -f json
+      register: result
+      when: cert.changed
+      changed_when: false
+
+    - name: Remove previous client certificates.
+      ansible.builtin.command: "lxc config trust remove {{ item.fingerprint }}"
+      when: item.name == 'autopilot-client'
+      with_items: "{{ result.stdout | default('{}') | from_json }}"
+      changed_when: false
+
+    - name: Trust client certificate.
+      ansible.builtin.command: lxc config trust add /root/autopilot-client.cert --type=client --name=autopilot-client
+      when: cert.changed
+      changed_when: false
+
+- name: Provision metrics certificate.
+  when: lxd_metrics_cert | length > 0
+  block:
+    - name: Create metrics certificate.
+      ansible.builtin.copy:
+        dest: "/root/autopilot-metrics.cert"
+        content: "{{ lxd_metrics_cert }}"
+        mode: "0600"
+      register: cert
+
+    - name: Get metrics certificates.
+      ansible.builtin.command: lxc config trust list -f json
+      register: result
+      when: cert.changed
+      changed_when: false
+
+    - name: Remove previous metrics certificates.
+      ansible.builtin.command: "lxc config trust remove {{ item.fingerprint }}"
+      when: item.name == 'autopilot-metrics'
+      with_items: "{{ result.stdout | default('{}') | from_json }}"
+      changed_when: false
+
+    - name: Trust metrics certificate.
+      ansible.builtin.command: lxc config trust add /root/autopilot-metrics.cert --type=metrics --name=autopilot-metrics
+      when: cert.changed
+      changed_when: false

@@ -2,5 +2,8 @@
 - hosts: "{{ playbook_hosts | default('servers') }}"
   become: true
   roles:
+    - name: server/lxd
+      tags: lxd
+
     - name: server/nginx
       tags: nginx
