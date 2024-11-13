@@ -38,3 +38,14 @@
   register: composer_update
   changed_when: "'Updating to version' in composer_update.stdout"
   when: composer_bin.stat.exists
+
+- name: Get composer version.
+  ansible.builtin.command: composer --version
+  changed_when: false
+  register: test_version
+  become_user: "{{ user_name }}"
+
+- name: Run tests.
+  ansible.builtin.assert:
+    that:
+      - test_version is search("Composer version")

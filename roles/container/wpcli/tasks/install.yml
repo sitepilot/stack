@@ -28,3 +28,14 @@
     src: wpcli.yml.j2
     dest: "{{ user_home_path }}/.wp-cli/config.yml"
     mode: "0644"
+
+- name: Get wpcli version.
+  ansible.builtin.command: wp --version
+  changed_when: false
+  register: test_version
+  become_user: "{{ user_name }}"
+
+- name: Run tests.
+  ansible.builtin.assert:
+    that:
+      - test_version is search("WP-CLI")

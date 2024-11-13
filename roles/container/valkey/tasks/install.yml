@@ -5,3 +5,14 @@
     state: present
     cache_valid_time: 3600
   notify: restart valkey
+
+- name: Get valkey version.
+  ansible.builtin.command: valkey-server --version
+  changed_when: false
+  register: test_version
+  become_user: "{{ user_name }}"
+
+- name: Run tests.
+  ansible.builtin.assert:
+    that:
+      - test_version is search("Server")

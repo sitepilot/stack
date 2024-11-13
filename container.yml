@@ -33,8 +33,3 @@
       tags: never, wordpress
       become: true
       become_user: "{{ user_name }}"
-
-    - name: container/tests
-      tags: tests
-      become: true
-      become_user: "{{ user_name }}"
