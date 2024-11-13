@@ -12,6 +12,6 @@ php_fpm_start_servers: 2
 php_fpm_min_spare_servers: 1
 php_fpm_max_spare_servers: 3
 
-php_error_log: "{{ container_logs_path }}/php.log"
-php_mail_log: "{{ container_logs_path }}/php-mail.log"
-php_fpm_log: "{{ container_logs_path }}/php-fpm.log"
+php_error_log: "{{ user_logs_path }}/php.log"
+php_mail_log: "{{ user_logs_path }}/php-mail.log"
+php_fpm_log: "{{ user_logs_path }}/php-fpm.log"

@@ -1,5 +1,5 @@
 # {{ ansible_managed }}
-{{ container_logs_path }}/*.log {
+{{ user_logs_path }}/*.log {
         daily
         rotate 14
         size 1M

@@ -8,7 +8,7 @@
   ansible.builtin.user:
     name: "{{ user_name }}"
     group: "{{ user_group }}"
-    home: "{{ container_home_path }}"
+    home: "{{ user_home_path }}"
     password: "{{ user_password }}"
     groups: "{{ user_groups }}"
     shell: /bin/bash
@@ -22,8 +22,8 @@
     owner: "{{ user_name }}"
     group: "{{ user_group }}"
   loop:
-    - "{{ container_logs_path }}"
-    - "{{ container_files_path }}"
+    - "{{ user_logs_path }}"
+    - "{{ user_files_path }}"
 
 - name: Add authorized keys.
   ansible.posix.authorized_key:

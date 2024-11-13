@@ -3,7 +3,6 @@
   ansible.builtin.assert:
     that:
       - user_name | length > 0
-      - container_type == None or container_type in container_types
       - server_type == None or server_type in server_types
       - database_type == None or database_type in database_types
       - cache_type == None or cache_type in cache_types

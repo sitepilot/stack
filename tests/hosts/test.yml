@@ -18,13 +18,12 @@ containers:
       ansible_port: 2221
       ansible_user: root
       ansible_ssh_private_key_file: ssh/test.key
-      container_name: test-1
-      container_type: wordpress
-      container_url: http://test-1.127.0.0.1.nip.io
       php_version: "8.3"
       node_version: 22
       server_type: nginx
       database_type: mariadb
       database_password: secret
       cache_type: valkey
+      wp_user: captain
       wp_password: secret
+      wp_url: http://test-d1x.127.0.0.1.nip.io

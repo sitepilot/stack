@@ -30,7 +30,7 @@
       tags: valkey
 
     - name: container/wordpress
-      tags: wordpress
+      tags: never, wordpress
       become: true
       become_user: "{{ user_name }}"
 

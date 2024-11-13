@@ -47,5 +47,8 @@ jobs:
       - name: Test server playbook
         run: ansible-playbook server.yml
 
-      - name: Test container playbook
+      - name: Test container roles
         run: ansible-playbook container.yml
+
+      - name: Test wordpress role
+        run: ansible-playbook container.yml --tags=wordpress

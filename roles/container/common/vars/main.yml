@@ -1,9 +1,4 @@
 ---
-container_types:
-  - php
-  - laravel
-  - wordpress
-
 server_types:
   - nginx
 

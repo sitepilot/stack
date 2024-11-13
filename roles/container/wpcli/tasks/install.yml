@@ -16,3 +16,15 @@
   register: result
   changed_when: "'Success: Updated' in result.stdout"
   when: wpcli_bin.stat.exists
+
+- name: Create wpcli config directory.
+  ansible.builtin.file:
+    path: "{{ user_home_path }}/.wp-cli"
+    mode: "0755"
+    state: directory
+
+- name: Generate wpcli configuration.
+  ansible.builtin.template:
+    src: wpcli.yml.j2
+    dest: "{{ user_home_path }}/.wp-cli/config.yml"
+    mode: "0644"
