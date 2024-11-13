@@ -30,7 +30,7 @@
     mode: "0644"
 
 - name: Get wpcli version.
-  ansible.builtin.command: wp --version
+  ansible.builtin.command: wp --version --allow-root
   changed_when: false
   register: test_version
 
