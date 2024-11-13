@@ -30,4 +30,4 @@
 - name: Run tests.
   ansible.builtin.assert:
     that:
-      - test_version is search(node_version|string)
+      - test_version is search(node_version)
