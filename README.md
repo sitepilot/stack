@@ -32,7 +32,7 @@ ensuring a lightweight and efficient environment tailored specifically to run th
 * **[Nginx](roles/container/nginx/defaults/main.yml)** - Installed when `server_type` is set to `nginx`.
 * **[MariaDB](roles/container/mariadb/defaults/main.yml)** - Installed when `database_type` is set to `mariadb`.
 * **[Valkey](roles/container/valkey/defaults/main.yml)** - Installed when `cache_type` is set to `valkey`.
-* **[WordPress](roles/container/wordpress/defaults/main.yml)** - Installed when `container_type` is set to `wordpress`.
+* **[WordPress](roles/container/wordpress/defaults/main.yml)** - Installed when the `wordpress` tag is specified.
 
 If software does not need to be installed, it will be automatically removed from the container.
 
