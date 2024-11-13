@@ -25,7 +25,6 @@
   ansible.builtin.command: node --version
   changed_when: false
   register: test_version
-  become_user: "{{ user_name }}"
 
 - name: Run tests.
   ansible.builtin.assert:
