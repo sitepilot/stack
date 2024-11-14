@@ -3,7 +3,7 @@ migration_host: null
 migration_port: 22
 migration_user: 'root'
 migration_path: null
+migration_type: null
+migration_local_url: null
+migration_local_path: "{{ user_files_path }}"
 migration_private_key: null
-migration_type: "{{ container_type }}"
-migration_local_url: "{{ container_url }}"
-migration_local_path: "{{ container_files_path }}"

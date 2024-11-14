@@ -6,6 +6,7 @@
       - migration_host | length > 0
       - migration_user | length > 0
       - migration_path | length > 0
+      - migration_local_path | length > 0
       - migration_private_key | length > 0
 
 - name: Create SSH directory.

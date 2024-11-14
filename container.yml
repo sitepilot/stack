@@ -33,3 +33,8 @@
       tags: never, wordpress
       become: true
       become_user: "{{ user_name }}"
+
+    - name: container/migration
+      tags: never, migration
+      become: true
+      become_user: "{{ user_name }}"
