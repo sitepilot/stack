@@ -38,7 +38,8 @@
   ansible.builtin.command: "{{ wpcli_path }} core install
     --url='{{ wp_url }}' --title='{{ wp_title }}'
     --admin_user='{{ wp_user }}' --admin_password='{{ wp_password }}'
-    --admin_email='{{ wp_email }}'"
+    --admin_email='{{ wp_email }}'
+    --skip-email"
   args:
     chdir: "{{ wp_path }}"
   register: result
