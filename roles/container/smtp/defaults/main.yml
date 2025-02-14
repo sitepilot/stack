@@ -4,4 +4,4 @@ smtp_port: 2525
 smtp_tls: true
 smtp_user: ""
 smtp_password: ""
-smtp_from: "{{ user_name }}@sitepilot.io"
+smtp_from: "{{ user_name }}@sitepilot.cloud"
