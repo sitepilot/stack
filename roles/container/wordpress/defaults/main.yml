@@ -4,7 +4,7 @@ wp_user: null
 wp_password: null
 
 wp_title: "{{ ansible_hostname }}"
-wp_email: "{{ wp_user }}@sitepilot.io"
+wp_email: "{{ wp_user }}@sitepilot.cloud"
 wp_path: "{{ user_files_path }}"
 wp_plugins: [ ]
 
