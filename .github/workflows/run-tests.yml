@@ -23,14 +23,14 @@ jobs:
       - name: Install pip packages
         run: pip3 install ansible-dev-tools --user
 
-      - name: Install ansible collections
-        run: ansible-galaxy install -r requirements.yml --force
+  #    - name: Install ansible collections
+  #      run: ansible-galaxy install -r requirements.yml --force
 
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        with:
-          limit-access-to-actor: true
-          limit-access-to-users: nbejansen
+  #    - name: Setup upterm session
+  #      uses: lhotari/action-upterm@v1
+  #      with:
+  #        limit-access-to-actor: true
+  #        limit-access-to-users: nbejansen
 
       - name: Lint ansible files
         run: ansible-lint ./roles
