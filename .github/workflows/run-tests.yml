@@ -21,7 +21,7 @@ jobs:
           restore-keys: ${{ runner.os }}-pip-
 
       - name: Install pip packages
-        run: pip3 install ansible-dev-tools --user
+        run: pip3 install ansible-dev-tools
 
   #    - name: Install ansible collections
   #      run: ansible-galaxy install -r requirements.yml --force
@@ -33,7 +33,7 @@ jobs:
   #        limit-access-to-users: nbejansen
 
       - name: Lint ansible files
-        run: ansible-lint ./roles
+        run: sudo ansible-lint ./roles
 
       - uses: canonical/setup-lxd@main
         with:
