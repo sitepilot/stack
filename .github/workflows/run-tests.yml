@@ -14,12 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-  #    - uses: actions/cache@v4
-  #      with:
-  #        path: ~/.cache/pip
-  #        key: ${{ runner.os }}-pip-${{ hashFiles('./requirements.txt') }}
-  #        restore-keys: ${{ runner.os }}-pip-
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -27,15 +21,6 @@ jobs:
 
       - name: Install pip packages
         run: pip3 install ansible-dev-tools
-
-  #    - name: Install ansible collections
-  #      run: ansible-galaxy install -r requirements.yml --force
-
-  #    - name: Setup upterm session
-  #      uses: lhotari/action-upterm@v1
-  #      with:
-  #        limit-access-to-actor: true
-  #        limit-access-to-users: nbejansen
 
       - name: Lint ansible files
         run: ansible-lint ./roles
