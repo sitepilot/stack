@@ -26,6 +26,9 @@ jobs:
       - name: Install ansible collections
         run: ansible-galaxy install -r requirements.yml --force
 
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+
       - name: Lint ansible files
         run: ansible-lint ./roles
 
