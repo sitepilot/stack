@@ -24,7 +24,7 @@ jobs:
         run: ansible-galaxy install -r requirements.yml --force
 
       - name: Install pip packages
-        run: pip3 install -r ./requirements.txt --user
+        run: pip3 install ansible-dev-tools
 
       - name: Lint ansible files
         run: ansible-lint ./roles
