@@ -33,7 +33,7 @@ jobs:
   #        limit-access-to-users: nbejansen
 
       - name: Lint ansible files
-        run: sudo ansible-lint ./roles
+        run: ansible-lint ./roles
 
       - uses: canonical/setup-lxd@main
         with:
