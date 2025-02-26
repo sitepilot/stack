@@ -29,7 +29,7 @@ http {
     client_max_body_size  1G;
 
     # DNS
-    resolver {{ ansible_lxdbr0.ipv4.address }};
+    resolver {{ ansible_lxdbr0.ipv4.address }} ipv6=off;
 
 {% if nginx_ssl_cert and nginx_ssl_key %}
     # SSL
