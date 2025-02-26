@@ -3,13 +3,6 @@ servers:
   hosts:
     lxd-test-1:
       ansible_connection: local
-      nginx_proxies:
-        - container: test-1
-          ports:
-            - port: 22
-              host_port: 2221
-          hosts:
-            - test-1.127.0.0.1.nip.io
 
 containers:
   hosts:

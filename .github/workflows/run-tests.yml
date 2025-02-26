@@ -31,6 +31,7 @@ jobs:
       - name: Create test containers
         run: |
           lxc launch ubuntu:24.04 test-1
+          lxc config device add test-1 ssh proxy listen=tcp:0.0.0.0:2221 connect=tcp:127.0.0.1:22
 
       - name: Setup container SSH keys
         run: |
