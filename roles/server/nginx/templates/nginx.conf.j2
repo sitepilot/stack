@@ -82,15 +82,10 @@ http {
 
         server_name ~^(?<container>.+)\.{{ nginx_domain }}$;
 
-        map $http_x_container $proxy_container {
-            default $http_x_container;
-            ''      $container;
-        }
-
         include snippets/errors.conf;
 
         location / {
-            proxy_pass http://$proxy_container;
+            proxy_pass http://$container;
             include    snippets/proxy.conf;
         }
     }
