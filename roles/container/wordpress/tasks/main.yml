@@ -57,6 +57,10 @@
   block:
     - name: Check if user exists.
       ansible.builtin.command: "{{ wpcli_path }} user exists {{ wp_user }}"
+      register: result
+      changed_when: "'Success' in result.stdout"
   rescue:
     - name: Create new user.
       ansible.builtin.command: "{{ wpcli_path }} user create {{ wp_user }} {{ wp_email }} --user_pass='{{ wp_password }}' --role=administrator --porcelain"
+      register: result
+      changed_when: "'Success' in result.stdout"
