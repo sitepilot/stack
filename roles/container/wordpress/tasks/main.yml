@@ -52,3 +52,11 @@
     chdir: "{{ wp_path }}"
   register: result
   changed_when: "'Installed' in result.stdout"
+
+- name: Create user if not exists.
+  block:
+    - name: Check if user exists.
+      ansible.builtin.command: "{{ wpcli_path }} user exists {{ wp_user }}"
+  rescue:
+    - name: Create new user.
+      ansible.builtin.command: "{{ wpcli_path }} user create {{ wp_user }} {{ wp_email }} --user_pass='{{ wp_password }}' --role=administrator --porcelain"
